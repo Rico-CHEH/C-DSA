@@ -68,19 +68,19 @@ void test_push() {
   printf("\n");
 }
 
-void test_pop() {
-  printf("================== Testing pop ==================\n");
+void test_erase() {
+  printf("================== Testing erase ==================\n");
   arraylist l = constructor(10);
   push(&l, 69);
-  pop(&l, 0);
+  int old = erase(&l, 0);
 
   printf("------------ Start Test 1 ------------\n");
   assert(l.size == 0);
   printf("Test passed: l.size == 0\n");
   assert(l.array != NULL);
   printf("Test passed: l.array != NULL\n");
-  assert(l.array[0] == 69);
-  printf("Test passed: l.array[0] == 69\n");
+  assert(old == 69);
+  printf("Test passed:old == 69\n");
   printf("------------ End Test 1 ------------\n");
 
   printf("\n");
@@ -88,7 +88,7 @@ void test_pop() {
   for (int i = 0; i < 12; i++) {
     push(&l, i);  // list should be {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
   }
-  pop(&l, 7);
+  old = erase(&l, 7);
 
   printf("------------ Start Test 2 ------------\n");
   assert(l.size == 11);
@@ -97,6 +97,8 @@ void test_pop() {
   printf("Test passed: l.length == 15\n");
   assert(l.array != NULL);
   printf("Test passed: l.array != NULL\n");
+  assert(old == 7);
+  printf("Test passed: old == 7\n");
 
   for (int i = 0; i < 7; i++) {
     assert(l.array[i] == i);
@@ -165,6 +167,8 @@ int main() {
   test_isEmpty();
   test_push();
   test_pop();
+  test_insert();
+  test_erase();
   test_get();
   test_resize();
 

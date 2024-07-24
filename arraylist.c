@@ -1,24 +1,33 @@
-#include <stdlib.h>
-#include <assert.h>
-#include <stdbool.h>
 #include "arraylist.h"
 
-bool isEmpty(arraylist *l) {
-  return l->size == 0;
+#include <assert.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+bool isEmpty(arraylist *l) { return l->size == 0; }
+
+int pop(arraylist *l) {
+  assert(l != NULL);
+  assert(l->array != NULL);
+
+  l->size--;
+  return l->array[l->size];
 }
 
-void pop(arraylist *l, int index) {
+int erase(arraylist *l, int index) {
   assert(l != NULL);
   assert(l->array != NULL);
   assert(index >= 0);
   assert(index < l->size);
   // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
-  
+
+  int result = l->array[index];
   l->size--;  // Lazily decrease amount of elements
   for (int i = index; i < l->size; i++) {
-    l->array[i] = l->array[i+1];
+    l->array[i] = l->array[i + 1];
   }
 
+  return result;
 }
 
 void resize(arraylist *l) {
@@ -43,11 +52,26 @@ void push(arraylist *l, int item) {
 
   if (l->size >= l->length) {
     resize(l);
-  } 
-
+  }
 
   l->array[l->size] = item;
   l->size++;
+}
+
+void insert(arraylist *l, int index, int item) {
+  assert(l != NULL);
+  assert(l->array != NULL);
+  assert(index >= 0);
+  assert(index < l->size);
+
+  if (l->size >= l->length) {
+    resize(l);
+  }
+
+  for (int i = l->size - 1; i >= l->size; i--) {
+    l->array[i+1] = l->array[i];
+  }
+  l->array[index] = item; 
 }
 
 void set(arraylist *l, int index, int item) {
