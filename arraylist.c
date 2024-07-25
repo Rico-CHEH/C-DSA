@@ -10,6 +10,7 @@ bool isEmpty(arraylist *l) { return l->size == 0; }
 int pop(arraylist *l) {
     assert(l != NULL);
     assert(l->array != NULL);
+    assert(l->size > 0);
 
     l->size--;
     return l->array[l->size];
@@ -18,6 +19,7 @@ int pop(arraylist *l) {
 int erase(arraylist *l, int index) {
     assert(l != NULL);
     assert(l->array != NULL);
+    assert(l->size > 0);
     assert(index >= 0);
     assert(index < l->size);
     // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
@@ -79,6 +81,7 @@ void insert(arraylist *l, int index, int item) {
 void set(arraylist *l, int index, int item) {
     assert(l != NULL);
     assert(l->array != NULL);
+    assert(l->size > 0);
     assert(index >= 0);
     assert(index < l->size);
 
@@ -88,6 +91,7 @@ void set(arraylist *l, int index, int item) {
 int get(arraylist *l, int index) {
     assert(l != NULL);
     assert(l->array != NULL);
+    assert(l->size > 0);
     assert(index >= 0);
     assert(index < l->size);
 

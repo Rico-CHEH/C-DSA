@@ -33,6 +33,7 @@ void test_isEmpty() {
     assert(isEmpty(&l));
     printf("Test passed: isEmpty(&l)\n");
     printf("------------ Start Test 1 ------------\n");
+    printf("\n");
 
     push(&l, 1);
     printf("------------ Start Test 2 ------------\n");
@@ -80,6 +81,7 @@ void test_pop() {
     assert(old == 69);
     printf("Test passed:old == 69\n");
     printf("------------ End Test 1 ------------\n");
+    printf("\n");
 
     push(&l, 69);
     push(&l, 67);
@@ -121,7 +123,7 @@ void test_insert() {
         }
         assert(l.array[i] == i + offset);
     }
-    printf("Test passed:l.array = {1,2,420,3,4}\n");
+    printf("Test passed: l.array = {1,2,420,3,4}\n");
     free(l.array);
     printf("================== Finished Testing insert ==================\n");
     printf("\n");
@@ -151,7 +153,7 @@ void test_erase() {
 
     printf("------------ Start Test 2 ------------\n");
     assert(l.size == 11);
-    printf("Test passed: l.size == 10\n");
+    printf("Test passed: l.size == 11\n");
     assert(l.length == 15);
     printf("Test passed: l.length == 15\n");
     assert(l.array != NULL);
@@ -169,7 +171,40 @@ void test_erase() {
     printf("------------ End Test 2 ------------\n");
 
     free(l.array);
-    printf("================== Finished Testing push ==================\n");
+    printf("================== Finished Testing erase ==================\n");
+    printf("\n");
+}
+
+void test_set() {
+    printf("================== Testing set ==================\n");
+    arraylist l = constructor(10);
+
+    for (int i = 0; i < 12; i++) {
+        push(&l, i);
+    }
+    set(&l, 0, 420);
+    set(&l, 7, -1);
+    set(&l, 11, 69);
+
+    for (int i = 0; i < 11; i++) {
+        switch (i) {
+            case 0:
+                assert(l.array[0] == 420);
+                break;
+            case 7:
+                assert(l.array[7] == -1);
+                break;
+            case 11:
+                assert(l.array[11] == 69);
+                break;
+            default:
+                assert(l.array[i] == i);
+        }
+    }
+    printf("Test passed: {420, 1, 2, 3, 4, 5, 6, -1, 8, 9, 10, 69}\n");
+
+    free(l.array);
+    printf("================== Finished Testing set ==================\n");
     printf("\n");
 }
 
@@ -221,12 +256,14 @@ void test_resize() {
 }
 
 int main() {
+    printf("\n");
     test_constructor();
     test_isEmpty();
     test_push();
     test_pop();
     test_insert();
     test_erase();
+    test_set();
     test_get();
     test_resize();
 
