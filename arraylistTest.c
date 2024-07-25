@@ -68,6 +68,65 @@ void test_push() {
   printf("\n");
 }
 
+void test_pop() { 
+  printf("================== Testing pop ==================\n");
+  arraylist l = constructor(10);
+  push(&l, 69);
+  int old = pop(&l);
+  
+  printf("------------ Start Test 1 ------------\n");
+  assert(l.size == 0);
+  printf("Test passed: l.size == 0\n");
+  assert(old == 69);
+  printf("Test passed:old == 69\n");
+  printf("------------ End Test 1 ------------\n");
+ 
+  push(&l, 69);
+  push(&l, 67);
+  push(&l, 64);
+  push(&l, 61);
+  old = pop(&l);
+  
+  printf("------------ Start Test 2 ------------\n");
+  assert(l.size == 3);
+  printf("Test passed: l.size == 3\n");
+  assert(old == 61);
+  printf("Test passed:old == 61\n");
+  printf("------------ End Test 2 ------------\n");
+  free(l.array);
+  printf("================== Finished Testing pop ==================\n");
+  printf("\n");
+}
+
+void test_insert() { 
+  printf("================== Testing insert ==================\n");
+  arraylist l = constructor(10);
+  int insertIndex = 2;
+  push(&l, 1); // {1,2,3,4}
+  push(&l, 2);
+  push(&l, 3);
+  push(&l, 4);
+  insert(&l, insertIndex, 420);
+
+  assert(l.size == 5);
+  printf("Test passed: l.size == 5\n");
+  assert(l.array != NULL);
+  printf("Test passed: l.array != NULL\n");
+  int offset = 1;
+  for (int i = 0; i < 5; i++) {
+    if (i == insertIndex) {
+      assert(l.array[i] == 420);
+      offset = 0;
+      continue;
+    }
+    assert(l.array[i] == i + offset);
+  }
+  printf("Test passed:l.array = {1,2,420,3,4}\n");
+  free(l.array);
+  printf("================== Finished Testing insert ==================\n"); 
+  printf("\n");
+}
+
 void test_erase() {
   printf("================== Testing erase ==================\n");
   arraylist l = constructor(10);

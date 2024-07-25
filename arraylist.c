@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 bool isEmpty(arraylist *l) { return l->size == 0; }
@@ -68,10 +69,11 @@ void insert(arraylist *l, int index, int item) {
     resize(l);
   }
 
-  for (int i = l->size - 1; i >= l->size; i--) {
-    l->array[i+1] = l->array[i];
+  for (int i = l->size - 1; i >= index; i--) {
+    l->array[i + 1] = l->array[i];
   }
-  l->array[index] = item; 
+  l->array[index] = item;
+  l->size++;
 }
 
 void set(arraylist *l, int index, int item) {
