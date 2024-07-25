@@ -19,5 +19,4 @@ linkedListTest.o: linkedListTest.c linkedList.h
 	gcc -Wall -g -c linkedListTest.c
 
 clean: 
-	rm -f testArrayList *.o
-
+	rm -f testsLinkedList.exe testsArrayList.exe  *.o
