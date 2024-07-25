@@ -1,7 +1,7 @@
-all: tests
+all: testsArrayList testsLinkedList
 
-tests: arraylistTest.o arraylist.o
-	gcc -Wall -g -o tests arraylistTest.o arraylist.o
+testsArrayList: arraylistTest.o arraylist.o
+	gcc -Wall -g -o testsArrayList arraylistTest.o arraylist.o
 
 arraylist.o: arraylist.c arraylist.h
 	gcc -Wall -g -c arraylist.c
@@ -9,6 +9,15 @@ arraylist.o: arraylist.c arraylist.h
 arraylistTest.o: arraylistTest.c arraylist.h
 	gcc -Wall -g -c arraylistTest.c
 
+testsLinkedList: linkedListTest.o linkedList.o
+	gcc -Wall -g -o testsLinkedList linkedListTest.o linkedList.o
+
+linkedList.o: linkedList.c linkedList.h
+	gcc -Wall -g -c linkedList.c
+
+linkedListTest.o: linkedListTest.c linkedList.h
+	gcc -Wall -g -c linkedListTest.c
+
 clean: 
-	rm -f tests arraylist.o arraylistTest.o
+	rm -f testArrayList *.o
 
