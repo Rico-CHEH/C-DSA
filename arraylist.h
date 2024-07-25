@@ -6,9 +6,9 @@
 #include <stdlib.h>
 
 typedef struct arraylist {
-  int size;    // Number of elements in the list
-  int length;  // Actual length of the array
-  int *array;
+    int size;    // Number of elements in the list
+    int length;  // Actual length of the array
+    int *array;
 } arraylist;
 
 bool isEmpty(arraylist *l);
