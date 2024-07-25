@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 typedef struct node {
@@ -29,11 +30,66 @@ void push(linkedlist* l, int item) {
   }
 
   node* cur = l->head;
-  while (cur->next == NULL) {
+  while (cur->next != NULL) {
     cur = cur->next;
   }
 
   cur->next = newNode;
+}
+
+int pop(linkedlist* l) {
+  assert(l != NULL);
+  assert(l->size >= 0);
+
+  int result;
+
+  node* cur = l->head;
+  while (cur->next != NULL && cur->next->next != NULL) {
+    cur = cur->next;
+  }
+  if (cur->next == NULL) {
+    result = cur->item;
+    free(cur);
+    l->head = NULL;
+  } else {
+    result = cur->item;
+    free(cur->next);
+    cur->next = NULL;
+  }
+  
+  return result;
+}
+
+void insert(linkedlist *l, int index, int item) {
+
+}
+
+int erase(linkedlist *l, int index) {
+  return ;
+}
+
+int get(linkedlist* l, int index) {
+  assert(l != NULL);
+  assert(l->size >= 0);
+  assert(l->size > index);
+
+  node *cur = l->head;
+  for (int i = 0; i < index; i++) {
+    cur = cur->next;
+  }
+  return cur->item;
+}
+
+void set(linkedlist* l, int index, int item) {
+  assert(l != NULL);
+  assert(l->size >= 0);
+  assert(l->size > index);
+
+  node *cur = l->head;
+  for (int i = 0; i < index; i++) {
+    cur = cur->next;
+  }
+  cur->item = item;
 }
 
 linkedlist constructor() {
