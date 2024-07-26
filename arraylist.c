@@ -7,16 +7,16 @@
 
 bool isEmpty(arraylist *l) { return l->size == 0; }
 
-int pop(arraylist *l) {
+void* pop(arraylist *l) {
     assert(l != NULL);
     assert(l->array != NULL);
     assert(l->size > 0);
 
     l->size--;
-    return l->array[l->size];
+    return l->array[l->size].item;
 }
 
-int erase(arraylist *l, int index) {
+void* erase(arraylist *l, int index) {
     assert(l != NULL);
     assert(l->array != NULL);
     assert(l->size > 0);
@@ -24,7 +24,7 @@ int erase(arraylist *l, int index) {
     assert(index < l->size);
     // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
 
-    int result = l->array[index];
+    void *result = l->array[index].item;
     l->size--;  // Lazily decrease amount of elements
     for (int i = index; i < l->size; i++) {
         l->array[i] = l->array[i + 1];
@@ -38,18 +38,18 @@ void resize(arraylist *l) {
     assert(l->array != NULL);
 
     l->length = l->length * 3 / 2;
-    int *newArray = (int *)malloc(l->length * sizeof(int));
+    node *newArray = (node *)malloc(l->length * sizeof(node));
 
     for (int i = 0; i < l->size; i++) {
         newArray[i] = l->array[i];
     }
 
-    int *temp = l->array;
+    node *temp = l->array;
     l->array = newArray;
     free(temp);
 }
 
-void push(arraylist *l, int item) {
+void push(arraylist *l, void* item) {
     assert(l != NULL);
     assert(l->array != NULL);
 
@@ -57,11 +57,11 @@ void push(arraylist *l, int item) {
         resize(l);
     }
 
-    l->array[l->size] = item;
+    l->array[l->size] = (node) {.item = item};
     l->size++;
 }
 
-void insert(arraylist *l, int index, int item) {
+void insert(arraylist *l, int index, void *item) {
     assert(l != NULL);
     assert(l->array != NULL);
     assert(index >= 0);
@@ -74,28 +74,28 @@ void insert(arraylist *l, int index, int item) {
     for (int i = l->size - 1; i >= index; i--) {
         l->array[i + 1] = l->array[i];
     }
-    l->array[index] = item;
+    l->array[index] = (node) {.item = item};
     l->size++;
 }
 
-void set(arraylist *l, int index, int item) {
+void set(arraylist *l, int index, void *item) {
     assert(l != NULL);
     assert(l->array != NULL);
     assert(l->size > 0);
     assert(index >= 0);
     assert(index < l->size);
 
-    l->array[index] = item;
+    l->array[index] = (node) {.item = item};
 }
 
-int get(arraylist *l, int index) {
+void* get(arraylist *l, int index) {
     assert(l != NULL);
     assert(l->array != NULL);
     assert(l->size > 0);
     assert(index >= 0);
     assert(index < l->size);
 
-    return l->array[index];
+    return l->array[index].item;
 }
 
 arraylist constructor(int length) {
@@ -106,7 +106,7 @@ arraylist constructor(int length) {
     arraylist l;
     l.size = 0;
     l.length = length;
-    l.array = (int *)malloc(length * sizeof(int));
+    l.array = (node *)malloc(length * sizeof(node));
 
     return l;
 }

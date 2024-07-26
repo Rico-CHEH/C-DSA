@@ -2,7 +2,7 @@ BasedOnStyle:  Google
 TabWidth: 4
 
 ---
-Language:        Cpp
+Language:        C
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: None

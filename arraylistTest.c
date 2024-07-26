@@ -3,6 +3,11 @@
 
 #include "arraylist.h"
 
+typedef struct dataNode {
+    int item;
+} dataNode;
+
+
 void test_constructor() {
     printf("================== Testing constructor ==================\n");
     arraylist l = constructor(10);
@@ -35,7 +40,8 @@ void test_isEmpty() {
     printf("------------ Start Test 1 ------------\n");
     printf("\n");
 
-    push(&l, 1);
+    dataNode a = {.item = 1};
+    push(&l, &a);
     printf("------------ Start Test 2 ------------\n");
     assert(l.array != NULL);
     printf("Test passed: l.array != NULL\n");
@@ -53,7 +59,9 @@ void test_isEmpty() {
 void test_push() {
     printf("================== Testing push ==================\n");
     arraylist l = constructor(10);
-    push(&l, 69);
+
+    dataNode a = {.item = 69};
+    push(&l, &a);
 
     assert(l.size == 1);
     printf("Test passed: l.size == 1\n");
@@ -61,8 +69,10 @@ void test_push() {
     printf("Test passed: l.length == 10\n");
     assert(l.array != NULL);
     printf("Test passed: l.array != NULL\n");
-    assert(l.array[0] == 69);
-    printf("Test passed: l.array[0] == 69\n");
+    assert((dataNode *)l.array[0].item == &a);
+    printf("Test passed: (dataNode*) l.array[0].item == &a\n");
+    assert(((dataNode *)l.array[0].item)->item == 69);
+    printf("Test passed: ((dataNode*) l.array[0].item)->item == 69\n");
 
     free(l.array);
     printf("================== Finished Testing push ==================\n");
@@ -72,8 +82,10 @@ void test_push() {
 void test_pop() {
     printf("================== Testing pop ==================\n");
     arraylist l = constructor(10);
-    push(&l, 69);
-    int old = pop(&l);
+
+    dataNode a = {.item = 69};
+    push(&l, &a);
+    int old = ((dataNode *)pop(&l))->item;
 
     printf("------------ Start Test 1 ------------\n");
     assert(l.size == 0);
@@ -83,11 +95,16 @@ void test_pop() {
     printf("------------ End Test 1 ------------\n");
     printf("\n");
 
-    push(&l, 69);
-    push(&l, 67);
-    push(&l, 64);
-    push(&l, 61);
-    old = pop(&l);
+    dataNode data1 = {.item = 69};
+    dataNode data2 = {.item = 67};
+    dataNode data3 = {.item = 64};
+    dataNode data4 = {.item = 61};
+
+    push(&l, &data1);
+    push(&l, &data2);
+    push(&l, &data3);
+    push(&l, &data4);
+    old = ((dataNode *)pop(&l))->item;
 
     printf("------------ Start Test 2 ------------\n");
     assert(l.size == 3);
@@ -95,6 +112,7 @@ void test_pop() {
     assert(old == 61);
     printf("Test passed:old == 61\n");
     printf("------------ End Test 2 ------------\n");
+
     free(l.array);
     printf("================== Finished Testing pop ==================\n");
     printf("\n");
@@ -104,11 +122,18 @@ void test_insert() {
     printf("================== Testing insert ==================\n");
     arraylist l = constructor(10);
     int insertIndex = 2;
-    push(&l, 1);  // {1,2,3,4}
-    push(&l, 2);
-    push(&l, 3);
-    push(&l, 4);
-    insert(&l, insertIndex, 420);
+
+    dataNode data1 = {.item = 1};
+    dataNode data2 = {.item = 2};
+    dataNode data3 = {.item = 3};
+    dataNode data4 = {.item = 4};
+    dataNode insertData = {.item = 420};
+
+    push(&l, &data1);
+    push(&l, &data2);
+    push(&l, &data3);
+    push(&l, &data4);
+    insert(&l, insertIndex, &insertData);
 
     assert(l.size == 5);
     printf("Test passed: l.size == 5\n");
@@ -117,13 +142,14 @@ void test_insert() {
     int offset = 1;
     for (int i = 0; i < 5; i++) {
         if (i == insertIndex) {
-            assert(l.array[i] == 420);
+            assert(((dataNode *)l.array[i].item)->item == 420);
             offset = 0;
             continue;
         }
-        assert(l.array[i] == i + offset);
+        assert(((dataNode *)l.array[i].item)->item == i + offset);
     }
     printf("Test passed: l.array = {1,2,420,3,4}\n");
+
     free(l.array);
     printf("================== Finished Testing insert ==================\n");
     printf("\n");
@@ -132,8 +158,10 @@ void test_insert() {
 void test_erase() {
     printf("================== Testing erase ==================\n");
     arraylist l = constructor(10);
-    push(&l, 69);
-    int old = erase(&l, 0);
+
+    dataNode data = {.item = 69};
+    push(&l, &data);
+    int old = ((dataNode *)erase(&l, 0))->item;
 
     printf("------------ Start Test 1 ------------\n");
     assert(l.size == 0);
@@ -146,10 +174,12 @@ void test_erase() {
 
     printf("\n");
 
+    dataNode *p_data = (dataNode *) malloc(12 * sizeof(dataNode));
     for (int i = 0; i < 12; i++) {
-        push(&l, i);  // list should be {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+        p_data[i] = (dataNode) {.item = i};
+        push(&l, p_data + i);  // list should be {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
     }
-    old = erase(&l, 7);
+    old = ((dataNode *)erase(&l, 7))->item;
 
     printf("------------ Start Test 2 ------------\n");
     assert(l.size == 11);
@@ -158,18 +188,20 @@ void test_erase() {
     printf("Test passed: l.length == 15\n");
     assert(l.array != NULL);
     printf("Test passed: l.array != NULL\n");
+    printf("old=%d\n",old);
     assert(old == 7);
     printf("Test passed: old == 7\n");
 
     for (int i = 0; i < 7; i++) {
-        assert(l.array[i] == i);
+        assert(((dataNode *)l.array[i].item)->item == i);
     }
     for (int i = 7; i < 11; i++) {
-        assert(l.array[i] == i + 1);
+        assert(((dataNode *)l.array[i].item)->item == i + 1);
     }
     printf("Test passed: l.array == {0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11}\n");
     printf("------------ End Test 2 ------------\n");
 
+    free(p_data);
     free(l.array);
     printf("================== Finished Testing erase ==================\n");
     printf("\n");
@@ -179,30 +211,36 @@ void test_set() {
     printf("================== Testing set ==================\n");
     arraylist l = constructor(10);
 
+    dataNode *p_data = (dataNode *) malloc(12 * sizeof(dataNode));
     for (int i = 0; i < 12; i++) {
-        push(&l, i);
+        p_data[i] = (dataNode) {.item = i};
+        push(&l, p_data + i);  // list should be {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
     }
-    set(&l, 0, 420);
-    set(&l, 7, -1);
-    set(&l, 11, 69);
+    dataNode setter1 = {.item = 420};
+    dataNode setter2 = {.item = -1};
+    dataNode setter3 = {.item = 69};
+    set(&l, 0, &setter1);
+    set(&l, 7, &setter2);
+    set(&l, 11, &setter3);
 
     for (int i = 0; i < 11; i++) {
         switch (i) {
             case 0:
-                assert(l.array[0] == 420);
+                assert(((dataNode *)l.array[i].item)->item == 420);
                 break;
             case 7:
-                assert(l.array[7] == -1);
+                assert(((dataNode *)l.array[i].item)->item == -1);
                 break;
             case 11:
-                assert(l.array[11] == 69);
+                assert(((dataNode *)l.array[i].item)->item == 69);
                 break;
             default:
-                assert(l.array[i] == i);
+                assert(((dataNode *)l.array[i].item)->item == i);
         }
     }
     printf("Test passed: {420, 1, 2, 3, 4, 5, 6, -1, 8, 9, 10, 69}\n");
 
+    free(p_data);
     free(l.array);
     printf("================== Finished Testing set ==================\n");
     printf("\n");
@@ -212,19 +250,22 @@ void test_get() {
     printf("================== Testing get ==================\n");
     arraylist l = constructor(10);
 
+    dataNode *p_data = (dataNode *) malloc(12 * sizeof(dataNode));
     for (int i = 0; i < 12; i++) {
-        push(&l, i);
+        p_data[i] = (dataNode) {.item = i};
+        push(&l, p_data + i);  // list should be {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
     }
 
     assert(l.array != NULL);
     printf("Test passed: l.array != NULL\n");
-    assert(get(&l, 0) == 0);
-    printf("Test passed: get(&l, 0) == 0\n");
-    assert(get(&l, 11) == 11);
-    printf("Test passed: get(&l, 11) == 11\n");
-    assert(get(&l, 7) == 7);
-    printf("Test passed: get(&l, 7) == 7\n");
+    assert(((dataNode *)get(&l, 0))->item == 0);
+    printf("Test passed: ((dataNode*)get(&l, 0))->item == 0\n");
+    assert(((dataNode *)get(&l, 11))->item == 11);
+    printf("Test passed: ((dataNode*)get(&l, 11))->item == 11\n");
+    assert(((dataNode *)get(&l, 7))->item == 7);
+    printf("Test passed: ((dataNode*)get(&l, 7))->item == 7\n");
 
+    free(p_data);
     free(l.array);
     printf("================== Finished Testing get ==================\n");
     printf("\n");
@@ -234,8 +275,10 @@ void test_resize() {
     printf("================== Testing resize ==================\n");
     arraylist l = constructor(10);
 
+    dataNode *p_data = (dataNode *) malloc(12 * sizeof(dataNode));
     for (int i = 0; i < 12; i++) {
-        push(&l, i);
+        p_data[i] = (dataNode) {.item = i};
+        push(&l, p_data + i);  // list should be {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
     }
 
     assert(l.size == 12);
@@ -246,10 +289,11 @@ void test_resize() {
     printf("Test passed: l.array != NULL\n");
 
     for (int i = 0; i < 12; i++) {
-        assert(l.array[i] == i);
+        assert(((dataNode *)l.array[i].item)->item == i);
     }
     printf("Test passed: l.array == {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}\n");
 
+    free(p_data);
     free(l.array);
     printf("================== Finished Testing resize ==================\n");
     printf("\n");
