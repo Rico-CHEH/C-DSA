@@ -8,7 +8,7 @@
 #include <time.h>
 
 typedef struct node {
-    int item;
+    void* item;
     struct node* next;
 } node;
 
@@ -18,12 +18,12 @@ typedef struct linkedlist {
 } linkedlist;
 
 bool isEmpty(linkedlist* l);
-void push(linkedlist* l, int item);
-int pop(linkedlist* l);
-void insert(linkedlist* l, int index, int item);
-int erase(linkedlist* l, int index);
-void set(linkedlist* l, int index, int item);
-int get(linkedlist* l, int index);
-void set(linkedlist* l, int index, int item);
+void push(linkedlist* l, void* item);
+void* pop(linkedlist* l);
+void insert(linkedlist* l, int index, void* item);
+void* erase(linkedlist* l, int index);
+void set(linkedlist* l, int index, void* item);
+void* get(linkedlist* l, int index);
+void set(linkedlist* l, int index, void* item);
 linkedlist constructor();
 #endif

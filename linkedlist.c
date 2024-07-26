@@ -7,10 +7,10 @@
 
 bool isEmpty(linkedlist* l) { return l->size == 0; }
 
-void push(linkedlist* l, int item) {
+void push(linkedlist* l, void* item) {
     assert(l != NULL);
 
-    node *newNode = (node*) malloc(sizeof(node));
+    node* newNode = (node*) malloc(sizeof(node));
     newNode->item = item;
     newNode->next = NULL;
     l->size++;
@@ -28,12 +28,12 @@ void push(linkedlist* l, int item) {
     cur->next = newNode;
 }
 
-int pop(linkedlist* l) {
+void* pop(linkedlist* l) {
     assert(l != NULL);
     assert(l->head != NULL);
     assert(l->size > 0);
 
-    int result;
+    void* result;
 
     node* cur = l->head;
     while (cur->next != NULL && cur->next->next != NULL) {
@@ -53,13 +53,13 @@ int pop(linkedlist* l) {
     return result;
 }
 
-void insert(linkedlist* l, int index, int item) {
+void insert(linkedlist* l, int index, void* item) {
     assert(l != NULL);
     assert(l->head != NULL);
     assert(index >= 0);
     assert(l->size > index);
 
-    node *newNode = (node*) malloc(sizeof(node));
+    node* newNode = (node*)malloc(sizeof(node));
     newNode->item = item;
     newNode->next = NULL;
 
@@ -73,18 +73,18 @@ void insert(linkedlist* l, int index, int item) {
     l->size++;
 }
 
-int erase(linkedlist* l, int index) {
+void* erase(linkedlist* l, int index) {
     assert(l != NULL);
     assert(l->head != NULL);
     assert(l->size > 0);
     assert(index >= 0);
     assert(l->size > index);
 
-    int result;
-    node *removeNode;
+    void* result;
+    node* removeNode;
     l->size--;
 
-    if (l->size == 0){
+    if (l->size == 0) {
         result = l->head->item;
         removeNode = l->head->next;
         l->head = NULL;
@@ -105,7 +105,7 @@ int erase(linkedlist* l, int index) {
     return result;
 }
 
-int get(linkedlist* l, int index) {
+void* get(linkedlist* l, int index) {
     assert(l != NULL);
     assert(l->head != NULL);
     assert(l->size > 0);
@@ -119,7 +119,7 @@ int get(linkedlist* l, int index) {
     return cur->item;
 }
 
-void set(linkedlist* l, int index, int item) {
+void set(linkedlist* l, int index, void* item) {
     assert(l != NULL);
     assert(l->head != NULL);
     assert(l->size > 0);
