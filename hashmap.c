@@ -24,14 +24,14 @@ int linear_probing(hashmap *map, int key) {
     assert(map != NULL);
 
     int pos = hash_division(map, key);
-    hashEntry entry = map->array[pos];
+    hashEntry *entry = &map->array[pos];
 
     for (int i = 0; i < map->num_slots; i++) {
-        if(entry.state == EMPTY || (entry.state == OCCUPIED && entry.key == key)) {
+        if(entry->state == EMPTY || (entry->state == OCCUPIED && entry->key == key)) {
             break;
         }
         pos = modulo(++pos, map->num_slots);
-        entry = map->array[pos];
+        entry = &map->array[pos];
     }
     return pos;
 }
@@ -40,10 +40,10 @@ int search(hashmap *map, int key) {
     assert(map != NULL);
 
     int pos = linear_probing(map, key);
-    hashEntry entry = map->array[pos];
-    assert(entry.state == OCCUPIED && entry.key == key);  // Making sure that the value exists
+    hashEntry *entry = &map->array[pos];
+    assert(entry->state == OCCUPIED && entry->key == key);  // Making sure that the value exists
 
-    return entry.value;
+    return entry->value;
 }
 
 void resize(hashmap *map) {
@@ -81,18 +81,16 @@ int insert(hashmap *map, int key, int value) {
     }
 
     int pos = linear_probing(map, key);
-    hashEntry entry = map->array[pos];
-    assert(entry.state == EMPTY || (entry.state == OCCUPIED && entry.key == key));
+    hashEntry *entry = &map->array[pos];
 
-    if (entry.state == EMPTY) {
-        entry.key = key;
-        entry.value = value;
-        entry.state = OCCUPIED;
-        return value;
-    }
+    assert(entry->state == EMPTY || (entry->state == OCCUPIED && entry->key == key));
 
-    int old_value = entry.value;
-    entry.value = value;
+    map->num_entries++;
+    int old_value = entry->value;
+    entry->key = key;
+    entry->value = value;
+    entry->state = OCCUPIED;
+
     return old_value;
 }
 
@@ -100,11 +98,12 @@ int erase(hashmap *map, int key) {
     assert(map != NULL);
 
     int pos = linear_probing(map, key);
-    hashEntry entry = map->array[pos];
-    assert(entry.state == OCCUPIED && entry.key == key);  // Making sure that the value exists
+    hashEntry *entry = &map->array[pos];
+    assert(entry->state == OCCUPIED && entry->key == key);  // Making sure that the value exists
 
-    entry.state = DELETED;
-    return entry.value;
+    map->num_entries--;
+    entry->state = DELETED;   // Lazily deleting object
+    return entry->value;
 }
 
 hashmap constructor(int length) {
@@ -118,7 +117,7 @@ hashmap constructor(int length) {
     map.num_entries = 0;
 
     for (int i = 0; i < length; i++) {
-        map.array->state = EMPTY;
+        map.array[i].state = EMPTY;
     }
 
     return map;
