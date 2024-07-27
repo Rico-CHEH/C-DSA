@@ -1,25 +1,9 @@
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#include "arraylist.h"
-
-typedef enum status {
-    EMPTY,
-    OCCUPIED,
-    DELETED
-}status;
-
-typedef struct hashEntry{
-    int key;
-    int value;
-    status state;
-}hashEntry;
-
-typedef struct hashmap {
-    int num_entries;
-    int num_slots;
-    arraylist list;
-}hashmap;
+#include "hashmap.h"
 
 int modulo(int a, int b) {
     int r = a % b;
@@ -30,41 +14,97 @@ int modulo(int a, int b) {
 }
 
 // TODO: Add a union with "all" possible hashings
-int hash_division(hashmap *map, int key){
+int hash_division(hashmap *map, int key) {
     assert(map != NULL);
     return modulo(key, map->num_slots);
 }
 
 // TODO: Create different probings
-int linear_probing(hashmap *map, int key){
+int linear_probing(hashmap *map, int key) {
     assert(map != NULL);
-    assert(map->num_slots > map->num_entries);
 
-    int i = 0;
     int pos = hash_division(map, key);
+    hashEntry entry = map->array[pos];
 
-    while (((hashEntry*)get(&map->list, pos))->state != EMPTY) {
+    for (int i = 0; i < map->num_slots; i++) {
+        if(entry.state == EMPTY || (entry.state == OCCUPIED && entry.key == key)) {
+            break;
+        }
         pos = modulo(++pos, map->num_slots);
+        entry = map->array[pos];
     }
-
     return pos;
 }
 
-void search(hashmap *map, int key) {
+int search(hashmap *map, int key) {
     assert(map != NULL);
 
-    int i = 0;
-    int pos = hash_division(map, key);
-    hashEntry *entry = ((hashEntry*)get(&map->list, pos));
-    status cur_state = entry->state;
+    int pos = linear_probing(map, key);
+    hashEntry entry = map->array[pos];
+    assert(entry.state == OCCUPIED && entry.key == key);  // Making sure that the value exists
 
-    while (cur_state != EMPTY || (cur_state == OCCUPIED && entry->key == key) {
-        pos = modulo(++pos, map->num_slots);
-        entry = ((hashEntry*)get(&map->list, pos));
-        cur_state = entry->state;
+    return entry.value;
+}
+
+void resize(hashmap *map) {
+    assert(map != NULL);
+
+    int old_length = map->num_slots;
+    int new_length = map->num_slots * 3 / 2;
+    hashEntry *old_array = map->array;
+    hashEntry *new_array = (hashEntry *)malloc(new_length * sizeof(hashEntry));
+
+    for (int i = 0; i < new_length; i++) {
+        new_array[i].state = EMPTY;
     }
 
-    
+    map->num_slots = new_length;
+    map->array = new_array;
+    int pos;
+    for (int i = 0; i < old_length; i++) {
+        pos = linear_probing(map, old_array[i].key);
+
+        // Sanity check that state is empty
+        assert(map->array[pos].state == EMPTY);
+        map->array[pos] = old_array[i];
+    }
+    free(old_array);
+}
+
+// Inserts (key, value) pair into dictionary, if record already exists with key
+// updates it and returns old value, no record simply returns the current value
+int insert(hashmap *map, int key, int value) {
+    assert(map != NULL);
+
+    if (map->num_entries >= map->num_slots) {
+        resize(map);
+    }
+
+    int pos = linear_probing(map, key);
+    hashEntry entry = map->array[pos];
+    assert(entry.state == EMPTY || (entry.state == OCCUPIED && entry.key == key));
+
+    if (entry.state == EMPTY) {
+        entry.key = key;
+        entry.value = value;
+        entry.state = OCCUPIED;
+        return value;
+    }
+
+    int old_value = entry.value;
+    entry.value = value;
+    return old_value;
+}
+
+int erase(hashmap *map, int key) {
+    assert(map != NULL);
+
+    int pos = linear_probing(map, key);
+    hashEntry entry = map->array[pos];
+    assert(entry.state == OCCUPIED && entry.key == key);  // Making sure that the value exists
+
+    entry.state = DELETED;
+    return entry.value;
 }
 
 hashmap constructor(int length) {
@@ -73,9 +113,13 @@ hashmap constructor(int length) {
     length = length < 10 ? 10 : length;
 
     hashmap map;
-    map.list = constructor(length);
-    map.num_entries = map.list.size;
-    map.num_slots = map.list.length;
+    map.array = (hashEntry *)malloc(length * sizeof(hashEntry));
+    map.num_slots = length;
+    map.num_entries = 0;
+
+    for (int i = 0; i < length; i++) {
+        map.array->state = EMPTY;
+    }
 
     return map;
 }
