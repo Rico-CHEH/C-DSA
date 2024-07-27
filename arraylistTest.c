@@ -37,7 +37,7 @@ void test_isEmpty() {
     printf("Test passed: l.size == 0\n");
     assert(isEmpty(&l));
     printf("Test passed: isEmpty(&l)\n");
-    printf("------------ Start Test 1 ------------\n");
+    printf("------------ End Test 1 ------------\n");
     printf("\n");
 
     dataNode a = {.item = 1};
@@ -49,7 +49,7 @@ void test_isEmpty() {
     printf("Test passed: l.size == 1\n");
     assert(!isEmpty(&l));
     printf("Test passed: !isEmpty(&l)\n");
-    printf("------------ Start Test 2 ------------\n");
+    printf("------------ End Test 2 ------------\n");
 
     free(l.array);
     printf("================== Finished Testing resize ==================\n");
