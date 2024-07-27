@@ -1,4 +1,4 @@
-all: testsArrayList testsLinkedList
+all: testsArrayList testsLinkedList testsHashMap
 
 testsArrayList: arraylistTest.o arraylist.o
 	gcc -Wall -g -o testsArrayList arraylistTest.o arraylist.o
@@ -18,5 +18,14 @@ linkedList.o: linkedList.c linkedList.h
 linkedListTest.o: linkedListTest.c linkedList.h
 	gcc -Wall -g -c linkedListTest.c
 
+testsHashMap: hashmapTest.o hashmap.o
+	gcc -Wall -g -o testsHashMap hashmapTest.o hashmap.o
+
+hashmap.o: hashmap.c hashmap.h
+	gcc -Wall -g -c hashmap.c
+
+hashmapTest.o: hashmapTest.c hashmap.h
+	gcc -Wall -g -c hashMapTest.c
+
 clean: 
-	rm -f testsLinkedList.exe testsArrayList.exe  *.o
+	rm -f tests*.exe *.o
