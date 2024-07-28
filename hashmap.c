@@ -1,9 +1,9 @@
+#include "hashmap.h"
+
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-
-#include "hashmap.h"
 
 int modulo(int a, int b) {
     int r = a % b;
@@ -27,7 +27,8 @@ int linear_probing(hashmap *map, int key) {
     hashEntry *entry = &map->array[pos];
 
     for (int i = 0; i < map->num_slots; i++) {
-        if(entry->state == EMPTY || (entry->state == OCCUPIED && entry->key == key)) {
+        if (entry->state == EMPTY ||
+            (entry->state == OCCUPIED && entry->key == key)) {
             break;
         }
         pos = modulo(++pos, map->num_slots);
@@ -41,11 +42,13 @@ int search(hashmap *map, int key) {
 
     int pos = linear_probing(map, key);
     hashEntry *entry = &map->array[pos];
-    assert(entry->state == OCCUPIED && entry->key == key);  // Making sure that the value exists
+    assert(entry->state == OCCUPIED &&
+           entry->key == key);  // Making sure that the value exists
 
     return entry->value;
 }
 
+// TODO: Add load factor implementation
 void resize(hashmap *map) {
     assert(map != NULL);
 
@@ -71,27 +74,47 @@ void resize(hashmap *map) {
     free(old_array);
 }
 
-// Inserts (key, value) pair into dictionary, if record already exists with key
-// updates it and returns old value, no record simply returns the current value
-int insert(hashmap *map, int key, int value) {
+int update(hashmap *map, int key, int value) {
+    assert(map != NULL);
+    int pos = linear_probing(map, key);
+    hashEntry *entry = &map->array[pos];
+
+    // Making sure the value exists
+    assert(entry->state == OCCUPIED && entry->key == key);
+
+    int old_value = entry->value;
+    entry->value = value;
+    return old_value;
+}
+
+void insert(hashmap *map, int key, int value) {
     assert(map != NULL);
 
     if (map->num_entries >= map->num_slots) {
         resize(map);
     }
 
-    int pos = linear_probing(map, key);
+    int pos = hash_division(map, key);
     hashEntry *entry = &map->array[pos];
 
-    assert(entry->state == EMPTY || (entry->state == OCCUPIED && entry->key == key));
+    for (int i = 0; i < map->num_slots; i++) {
+        if (entry->state == EMPTY || entry->state == DELETED) {
+            break;
+        }
+        if (entry->state == OCCUPIED && entry->key == key) {
+            break;
+        }
+        pos = modulo(++pos, map->num_slots);
+        entry = &map->array[pos];
+    }
+
+    // Making sure the key is not in the table
+    assert(entry->state == EMPTY || entry->state == DELETED);
 
     map->num_entries++;
-    int old_value = entry->value;
     entry->key = key;
     entry->value = value;
     entry->state = OCCUPIED;
-
-    return old_value;
 }
 
 int erase(hashmap *map, int key) {
@@ -99,10 +122,11 @@ int erase(hashmap *map, int key) {
 
     int pos = linear_probing(map, key);
     hashEntry *entry = &map->array[pos];
-    assert(entry->state == OCCUPIED && entry->key == key);  // Making sure that the value exists
+    assert(entry->state == OCCUPIED &&
+           entry->key == key);  // Making sure that the value exists
 
     map->num_entries--;
-    entry->state = DELETED;   // Lazily deleting object
+    entry->state = DELETED;  // Lazily deleting object
     return entry->value;
 }
 

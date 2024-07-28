@@ -22,7 +22,8 @@ typedef struct hashmap {
 
 int search(hashmap *map, int key);
 void resize(hashmap *map);
-int insert(hashmap *map, int key, int value);
+int update(hashmap *map, int key, int value);
+void insert(hashmap *map, int key, int value);
 int erase(hashmap *map, int key);
 hashmap constructor(int length);
 #endif
