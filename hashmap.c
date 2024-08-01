@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_LOAD_FACTOR 0.75      // Load factor for Open Adressing
+
 int modulo(int a, int b) {
     int r = a % b;
     if (a >= 0 || r == 0) {
@@ -90,7 +92,7 @@ int update(hashmap *map, int key, int value) {
 void insert(hashmap *map, int key, int value) {
     assert(map != NULL);
 
-    if (map->num_entries >= map->num_slots) {
+    if ((double) map->num_entries / (double) map->num_slots >= MAX_LOAD_FACTOR) {
         resize(map);
     }
 

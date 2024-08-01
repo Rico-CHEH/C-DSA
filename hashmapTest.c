@@ -91,9 +91,6 @@ void test_resize() {
     insert(&map, 3, 3);
     insert(&map, 7, 7);
     insert(&map, 8, 8);
-    insert(&map, 15, 15);
-    insert(&map, 20, 20);
-    insert(&map, 9, 9);
 
     printf("------------ Start Test 1 ------------\n");
 
@@ -128,19 +125,8 @@ void test_resize() {
     assert(map.array[8].value == 8);
     assert(map.array[8].state == OCCUPIED);
 
-    assert(map.array[5].key == 15);
-    assert(map.array[5].value == 15);
-    assert(map.array[5].state == OCCUPIED);
-
-    assert(map.array[6].key == 20);
-    assert(map.array[6].value == 20);
-    assert(map.array[6].state == OCCUPIED);
-
-    assert(map.array[9].key == 9);
-    assert(map.array[9].value == 9);
-    assert(map.array[9].state == OCCUPIED);
-
-    printf("Test passed: array is {10, 11, 12, 0, 3, 15, 20, 7, 8, 9}\n");
+    printf(
+        "Test passed: array is {10, 11, 12, 0, 3, null, null, 7, 8, null}\n");
     printf("------------ End Test 1 ------------\n");
     printf("\n");
 
@@ -178,29 +164,13 @@ void test_resize() {
     assert(map.array[8].value == 8);
     assert(map.array[8].state == OCCUPIED);
 
-    assert(map.array[1].key == 15);
-    assert(map.array[1].value == 15);
+    assert(map.array[1].key == 1);
+    assert(map.array[1].value == 1);
     assert(map.array[1].state == OCCUPIED);
 
-    assert(map.array[5].key == 20);
-    assert(map.array[5].value == 20);
-    assert(map.array[5].state == OCCUPIED);
-
-    assert(map.array[9].key == 9);
-    assert(map.array[9].value == 9);
-    assert(map.array[9].state == OCCUPIED);
-
-    assert(map.array[2].key == 1);
-    assert(map.array[2].value == 1);
-    assert(map.array[2].state == OCCUPIED);
-
-    assert(map.array[2].key == 1);
-    assert(map.array[2].value == 1);
-    assert(map.array[2].state == OCCUPIED);
-
     printf(
-        "Test passed: array is {0, 15, 1, 3, null, 20, null, 7, 8, 9, 10, 11, "
-        "12, null}\n");
+        "Test passed: array is {0, 1, null, 3, null, null, null, 7, 8, 9, 10, "
+        "11, 12, null}\n");
     printf("------------ End Test 2 ------------\n");
 
     free(map.array);
