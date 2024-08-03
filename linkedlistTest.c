@@ -129,7 +129,7 @@ void test_insert() {
     printf("================== Testing insert ==================\n");
     linkedlist l = constructor();
     int insertIndex = 2;
-    push(&l, &(data_node) {.item = 1});
+    insert(&l, 0, &(data_node) {.item = 1});
     push(&l, &(data_node) {.item = 2});
     push(&l, &(data_node) {.item = 3});
     push(&l, &(data_node) {.item = 4});

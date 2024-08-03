@@ -53,15 +53,22 @@ void* pop(linkedlist* l) {
     return result;
 }
 
+// TODO: Test for insert at beginning and at the end
 void insert(linkedlist* l, int index, void* item) {
     assert(l != NULL);
-    assert(l->head != NULL);
     assert(index >= 0);
-    assert(l->size > index);
+    assert(l->size >= index);
 
     node* newNode = (node*)malloc(sizeof(node));
     newNode->item = item;
     newNode->next = NULL;
+
+    if (index == 0) {
+        newNode->next = l->head;
+        l->head = newNode;
+        l->size++;
+        return;
+    }
 
     node* cur = l->head;
     for (int i = 0; i < index - 1; i++) {

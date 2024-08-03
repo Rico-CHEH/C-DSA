@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 typedef struct node {
     void* item;
@@ -22,7 +21,6 @@ void push(linkedlist* l, void* item);
 void* pop(linkedlist* l);
 void insert(linkedlist* l, int index, void* item);
 void* erase(linkedlist* l, int index);
-void set(linkedlist* l, int index, void* item);
 void* get(linkedlist* l, int index);
 void set(linkedlist* l, int index, void* item);
 linkedlist constructor();
