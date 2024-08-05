@@ -53,7 +53,6 @@ void* pop(linkedlist* l) {
     return result;
 }
 
-// TODO: Test for insert at beginning and at the end
 void insert(linkedlist* l, int index, void* item) {
     assert(l != NULL);
     assert(index >= 0);

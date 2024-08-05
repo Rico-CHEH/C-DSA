@@ -3,9 +3,6 @@
 
 #include "linkedlist.h"
 
-/*
-printf("Test passed:\n");
-*/
 typedef struct data_node {
     int item;
 }data_node;
@@ -132,7 +129,7 @@ void test_insert() {
     insert(&l, 0, &(data_node) {.item = 1});
     push(&l, &(data_node) {.item = 2});
     push(&l, &(data_node) {.item = 3});
-    push(&l, &(data_node) {.item = 4});
+    insert(&l, 3, &(data_node) {.item = 4});
     insert(&l, insertIndex, &(data_node) {.item = 420});
 
     assert(l.size == 5);
