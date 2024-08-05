@@ -1,19 +1,8 @@
+#include "dlinkedlist.h"
+
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <cstdio>
-
-typedef struct d_node {
-    void* item;
-    struct d_node* next;
-    struct d_node* prev;
-} d_node;
-
-typedef struct dlinkedlist {
-    int size;
-    d_node* dummy_head;
-    d_node* dummy_tail;
-} dlinkedlist;
 
 bool isEmpty(dlinkedlist* l) { return l->size == 0; }
 
@@ -27,6 +16,7 @@ void push(dlinkedlist* l, void* item) {
 
     l->dummy_tail->prev = new_node;
     new_node->prev->next = new_node;
+    l->size++;
 }
 
 void* pop(dlinkedlist* l) {
@@ -42,6 +32,7 @@ void* pop(dlinkedlist* l) {
     old_node->next = NULL;
     old_node->item = NULL;
     free(old_node);
+    l->size--;
 
     return old_value;
 }
@@ -71,8 +62,8 @@ void insert(dlinkedlist* l, int index, void* item) {
         for (int i = l->size - 1; i > index; i--) {
             cur = cur->prev;
         }
-        new_node->next = cur;
-        new_node->prev = cur->prev;
+        new_node->prev = cur;
+        new_node->next = cur->next;
         new_node->prev->next = new_node;
         new_node->next->prev = new_node;
     }
@@ -88,15 +79,14 @@ void* erase(dlinkedlist* l, int index) {
     d_node* cur;
     if (index <= l->size / 2) {
         cur = l->dummy_head->next;
-        for (int i = 0; i <= index; i++) {
+        for (int i = 0; i < index; i++) {
             cur = cur->next;
         }
         cur->next->prev = cur->prev;
         cur->prev->next = cur->next;
-    }
-    else {
+    } else {
         cur = l->dummy_tail->prev;
-        for (int i = l->size - 1; i >= index; i--) {
+        for (int i = l->size - 1; i > index; i--) {
             cur = cur->prev;
         }
         cur->next->prev = cur->prev;
@@ -107,6 +97,7 @@ void* erase(dlinkedlist* l, int index) {
     cur->next = NULL;
     cur->prev = NULL;
     free(cur);
+    l->size--;
 
     return old_value;
 }
@@ -120,13 +111,12 @@ void* get(dlinkedlist* l, int index) {
     d_node* cur;
     if (index <= l->size / 2) {
         cur = l->dummy_head->next;
-        for (int i = 0; i <= index; i++) {
+        for (int i = 0; i < index; i++) {
             cur = cur->next;
         }
-    }
-    else {
+    } else {
         cur = l->dummy_tail->prev;
-        for (int i = l->size - 1; i >= index; i--) {
+        for (int i = l->size - 1; i > index; i--) {
             cur = cur->prev;
         }
     }
@@ -143,13 +133,12 @@ void set(dlinkedlist* l, int index, void* item) {
     d_node* cur;
     if (index <= l->size / 2) {
         cur = l->dummy_head->next;
-        for (int i = 0; i <= index; i++) {
+        for (int i = 0; i < index; i++) {
             cur = cur->next;
         }
-    }
-    else {
+    } else {
         cur = l->dummy_tail->prev;
-        for (int i = l->size - 1; i >= index; i--) {
+        for (int i = l->size - 1; i > index; i--) {
             cur = cur->prev;
         }
     }
@@ -160,8 +149,8 @@ void set(dlinkedlist* l, int index, void* item) {
 dlinkedlist constructor() {
     dlinkedlist l;
     l.size = 0;
-    l.dummy_head = (d_node*) malloc(sizeof(d_node));
-    l.dummy_tail = (d_node*) malloc(sizeof(d_node));
+    l.dummy_head = (d_node*)malloc(sizeof(d_node));
+    l.dummy_tail = (d_node*)malloc(sizeof(d_node));
 
     l.dummy_head->item = NULL;
     l.dummy_head->next = l.dummy_tail;
