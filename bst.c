@@ -1,66 +1,69 @@
+#include "bst.h"
+
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-typedef struct bst {
-    int value;
-    struct bst* left;
-    struct bst* right;
-} bst;
+bool isEmpty(bst* tree) {
+    return tree->num_nodes == 0;
+}
 
 bool search(bst* tree, int value) {
     assert(tree != NULL);
 
-    while (tree != NULL && tree->value != value) {
-        if (tree->value < value) {
-            tree = tree->left;
+    tree_node *node = tree->root;
+    while (node != NULL && node->value != value) {
+        if (value > node->value) {
+            node = node->right;
         } else {
-            tree = tree->right;
+            node = node->left;
         }
     }
 
-    return tree != NULL && tree->value == value;
+    return node != NULL && node->value == value;
 }
 
-void remove(bst* tree, int value) {
+void erase(bst* tree, int value) {
     assert(tree != NULL);
+    assert(tree->root != NULL);
 
-    bst* previous;
-    while (tree != NULL && tree->value != value) {
-        previous = tree;
-        if (tree->value < value) {
-            tree = tree->left;
+    tree_node *node = tree->root;
+    while (node != NULL && node->value != value) {
+        if (value > node->value) {
+            node = node->right;
         } else {
-            tree = tree->left;
+            node = node->left;
         }
     }
 
-    assert(tree != NULL);
+    assert(node != NULL);
+    tree->num_nodes--;
 
     // 3 cases:
-    // case 1 => tree->right = NULL
-    // case 2 => tree->right->left = NULL
-    // case 3 => tree->right->left->...->left = NULL
-    bst* var;
-    if (tree->right == NULL) {
-        var = tree->left;
-        tree->value = tree->left->value;
-        tree->right = tree->left->right;
-        tree->left = tree->left->left;
+    // case 1 => node->right = NULL
+    // case 2 => node->right->left = NULL
+    // case 3 => node->right->left->...->left = NULL
+    tree_node* var;
+    if (node->right == NULL) {
+        var = node->left;
+        node->value = node->left->value;
+        node->right = node->left->right;
+        node->left = node->left->left;
 
-    } else if (tree->right->left == NULL) {
-        var = tree->right;
-        tree->value = tree->right->value;
-        tree->right = tree->right->right;
-        tree->left = tree->right->left;
+    } else if (node->right->left == NULL) {
+        var = node->right;
+        node->value = node->right->value;
+        node->right = node->right->right;
+        node->left = node->right->left;
     } else {
-        bst* cur = tree->right;
+        tree_node* cur = node->right;
         while (cur->left->left != NULL) {
             cur = cur->left;
         }
-        tree->value = cur->left->value;
-        tree->right = cur->left->right;
-        tree->left = cur->left->left;
+        node->value = cur->left->value;
+        node->right = cur->left->right;
+        node->left = cur->left->left;
 
         var = cur->left;
         cur->left = NULL;
@@ -72,26 +75,75 @@ void remove(bst* tree, int value) {
 }
 
 void add(bst* tree, int value) {
-    if (tree == NULL) {
-        tree = (bst*)malloc(sizeof(bst));
-        tree->left = NULL;
-        tree->right = NULL;
+    assert(tree != NULL);
+
+    tree_node* node = tree->root;
+    tree_node* previous = NULL;
+    while (node != NULL) {
+        assert(node->value != value);
+
+        previous = node;
+        if (value > node->value) {
+            node = node->right;
+        } else {
+            node = node->left;
+        }
     }
 
-    assert(tree->value != value);
-    if (tree->value < value) {
-        add(tree->left, value);
+    tree->num_nodes++;
+    node = (tree_node*) malloc(sizeof(tree_node));
+    node->value = value;
+    node->left = NULL;
+    node->right = NULL;
+
+
+    if (previous == NULL) {
+        tree->root = node;
+        return;
+    }
+
+    if (value > previous->value) {
+        previous->right = node;
     } else {
-        add(tree->right, value);
+        previous->left = node;
     }
 }
 
-int height(bst* tree) {
+int height_helper(tree_node* tree) {
+    assert(tree != NULL);
     if (tree == NULL) {
         return 0;
     }
 
-    return max(height(tree->right), height(tree->left)) + 1;
+    int left_height = height_helper(tree->right);
+    int right_height = height_helper(tree->left);
+    return left_height > right_height ? left_height + 1 : right_height + 1;
 }
 
-bst* constructor() { return NULL; }
+int height(bst* tree) {
+    assert(tree != NULL);
+    return height_helper(tree->root);
+}
+
+int inorder_helper(tree_node* root, tree_node** array, int index) {
+    if (root == NULL) {
+        return index;
+    }
+
+    index = inorder_helper(root->left, array, index);
+    array[index++] = root;
+    return inorder_helper(root->right, array, index);
+}
+
+tree_node** inorder(bst *tree) {
+    assert(tree != NULL);
+
+    tree_node **array = (tree_node**) malloc(tree->num_nodes * sizeof(tree_node*));
+    inorder_helper(tree->root, array, 0);
+    return array;
+}
+
+bst constructor() {
+    bst tree = {.num_nodes = 0, .root = NULL};
+    return tree;
+}
