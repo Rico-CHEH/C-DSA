@@ -1,4 +1,4 @@
-all: testsArrayList testsLinkedList testsHashMap testsDLinkedList
+all: testsArrayList testsLinkedList testsHashMap testsDLinkedList testsBst
 
 testsArrayList: arraylistTest.o arraylist.o
 	gcc -Wall -g -o testsArrayList arraylistTest.o arraylist.o
@@ -8,6 +8,15 @@ arraylist.o: arraylist.c arraylist.h
 
 arraylistTest.o: arraylistTest.c arraylist.h
 	gcc -Wall -g -c arraylistTest.c
+
+testsBst: bstTest.o bst.o
+	gcc -Wall -g -o testsBst bstTest.o bst.o
+
+bst.o: bst.c bst.h
+	gcc -Wall -g -c bst.c
+
+bstTest.o: bstTest.c bst.h
+	gcc -Wall -g -c bstTest.c
 
 testsDLinkedList: dlinkedListTest.o dlinkedList.o
 	gcc -Wall -g -o testsDLinkedList dlinkedListTest.o dlinkedList.o
