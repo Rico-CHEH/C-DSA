@@ -36,7 +36,7 @@ Note:
 Implemented Data Structures:
 - [x] Arraylist
 - [x] Singly Linkedlist
-- [x] Doubly Linkedlist
 - [x] HashMap (Only Open Adressing, Without generics)
-- [ ] Trees
+- [x] Doubly Linkedlist
+- [x] Binary Search Trees
 - [ ] Heaps
