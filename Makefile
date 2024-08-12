@@ -1,49 +1,40 @@
-all: testsArrayList testsLinkedList testsHashMap testsDLinkedList testsBst
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -g
 
-testsArrayList: arraylistTest.o arraylist.o
-	gcc -Wall -g -o testsArrayList arraylistTest.o arraylist.o
+# Executable names
+EXECUTABLES = testsArrayList testsLinkedList testsHashMap testsDLinkedList testsBst
 
-arraylist.o: arraylist.c arraylist.h
-	gcc -Wall -g -c arraylist.c
+# Object files
+ARRAYLIST_OBJS = arraylistTest.o arraylist.o
+LINKEDLIST_OBJS = linkedlistTest.o linkedlist.o
+HASHMAP_OBJS = hashmapTest.o hashmap.o
+DLINKEDLIST_OBJS = dlinkedlistTest.o dlinkedlist.o
+BST_OBJS = bstTest.o bst.o
 
-arraylistTest.o: arraylistTest.c arraylist.h
-	gcc -Wall -g -c arraylistTest.c
+# Default target
+all: $(EXECUTABLES)
 
-testsBst: bstTest.o bst.o
-	gcc -Wall -g -o testsBst bstTest.o bst.o
+# Executable targets
+testsArrayList: $(ARRAYLIST_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(ARRAYLIST_OBJS)
 
-bst.o: bst.c bst.h
-	gcc -Wall -g -c bst.c
+testsLinkedList: $(LINKEDLIST_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(LINKEDLIST_OBJS)
 
-bstTest.o: bstTest.c bst.h
-	gcc -Wall -g -c bstTest.c
+testsHashMap: $(HASHMAP_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(HASHMAP_OBJS)
 
-testsDLinkedList: dlinkedListTest.o dlinkedList.o
-	gcc -Wall -g -o testsDLinkedList dlinkedListTest.o dlinkedList.o
+testsDLinkedList: $(DLINKEDLIST_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(DLINKEDLIST_OBJS)
 
-dlinkedList.o: dlinkedList.c dlinkedList.h
-	gcc -Wall -g -c dlinkedList.c
+testsBst: $(BST_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(BST_OBJS)
 
-dlinkedListTest.o: dlinkedListTest.c dlinkedList.h
-	gcc -Wall -g -c dlinkedListTest.c
+# Generic pattern rule for object files
+%.o: %.c %.h
+	$(CC) $(CFLAGS) -c $<
 
-testsLinkedList: linkedListTest.o linkedList.o
-	gcc -Wall -g -o testsLinkedList linkedListTest.o linkedList.o
-
-linkedList.o: linkedList.c linkedList.h
-	gcc -Wall -g -c linkedList.c
-
-linkedListTest.o: linkedListTest.c linkedList.h
-	gcc -Wall -g -c linkedListTest.c
-
-testsHashMap: hashmapTest.o hashmap.o
-	gcc -Wall -g -o testsHashMap hashmapTest.o hashmap.o
-
-hashmap.o: hashmap.c hashmap.h
-	gcc -Wall -g -c hashmap.c
-
-hashmapTest.o: hashmapTest.c hashmap.h
-	gcc -Wall -g -c hashMapTest.c
-
-clean: 
-	rm -f tests*.exe *.o
+# Clean target
+clean:
+	rm -f $(EXECUTABLES) *.o
