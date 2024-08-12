@@ -24,56 +24,6 @@ bool search(bst* tree, int value) {
     return node != NULL && node->value == value;
 }
 
-void erase(bst* tree, int value) {
-    assert(tree != NULL);
-    assert(tree->root != NULL);
-
-    tree_node *node = tree->root;
-    while (node != NULL && node->value != value) {
-        if (value > node->value) {
-            node = node->right;
-        } else {
-            node = node->left;
-        }
-    }
-
-    assert(node != NULL);
-    tree->num_nodes--;
-
-    // 3 cases:
-    // case 1 => node->right = NULL
-    // case 2 => node->right->left = NULL
-    // case 3 => node->right->left->...->left = NULL
-    tree_node* var;
-    if (node->right == NULL) {
-        var = node->left;
-        node->value = node->left->value;
-        node->right = node->left->right;
-        node->left = node->left->left;
-
-    } else if (node->right->left == NULL) {
-        var = node->right;
-        node->value = node->right->value;
-        node->right = node->right->right;
-        node->left = node->right->left;
-    } else {
-        tree_node* cur = node->right;
-        while (cur->left->left != NULL) {
-            cur = cur->left;
-        }
-        node->value = cur->left->value;
-        node->right = cur->left->right;
-        node->left = cur->left->left;
-
-        var = cur->left;
-        cur->left = NULL;
-    }
-
-    var->left = NULL;
-    var->right = NULL;
-    free(var);
-}
-
 void add(bst* tree, int value) {
     assert(tree != NULL);
 
@@ -110,7 +60,6 @@ void add(bst* tree, int value) {
 }
 
 int height_helper(tree_node* tree) {
-    assert(tree != NULL);
     if (tree == NULL) {
         return 0;
     }
@@ -121,7 +70,6 @@ int height_helper(tree_node* tree) {
 }
 
 int height(bst* tree) {
-    assert(tree != NULL);
     return height_helper(tree->root);
 }
 

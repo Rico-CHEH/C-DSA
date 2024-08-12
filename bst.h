@@ -16,7 +16,6 @@ typedef struct bst {
 
 bool isEmpty(bst* tree);
 bool search(bst* tree, int value);
-void erase(bst* tree, int value);
 void add(bst* tree, int value);
 int height(bst* tree);
 tree_node** inorder(bst *tree);
