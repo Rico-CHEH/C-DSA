@@ -2,22 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef enum status {
-    FREE,
-    OCCUPIED,
-} status;
-
-typedef struct node {
-    int parent;
-    status state;
-} node;
-
-typedef struct unionfind {
-    int num_disjoint_trees;
-    int num_slots;
-    int num_items;
-    node* array;
-} unionfind;
+#include "unionfind.h"
 
 bool isEmpty(unionfind* set) {
     assert(set != NULL);
