@@ -6,11 +6,12 @@ CFLAGS = -Wall -g
 EXECUTABLES = testsArrayList testsLinkedList testsHashMap testsDLinkedList testsBst
 
 # Object files
-ARRAYLIST_OBJS = arraylistTest.o arraylist.o
-LINKEDLIST_OBJS = linkedlistTest.o linkedlist.o
-HASHMAP_OBJS = hashmapTest.o hashmap.o
-DLINKEDLIST_OBJS = dlinkedlistTest.o dlinkedlist.o
-BST_OBJS = bstTest.o bst.o
+ARRAYLIST_OBJS = ./lists/arraylistTest.o ./lists/arraylist.o
+LINKEDLIST_OBJS = ./lists/linkedlistTest.o ./lists/linkedlist.o
+HASHMAP_OBJS = ./maps/hashmapTest.o ./maps/hashmap.o
+DLINKEDLIST_OBJS = ./lists/dlinkedlistTest.o ./lists/dlinkedlist.o
+BST_OBJS = ./trees/bstTest.o ./trees/bst.o
+ALL =  ./lists/arraylistTest.o ./lists/arraylist.o ./lists/linkedlistTest.o ./lists/linkedlist.o ./maps/hashmapTest.o ./maps/hashmap.o ./lists/dlinkedlistTest.o ./lists/dlinkedlist.o ./trees/bstTest.o ./trees/bst.o
 
 # Default target
 all: $(EXECUTABLES)
@@ -32,9 +33,9 @@ testsBst: $(BST_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(BST_OBJS)
 
 # Generic pattern rule for object files
-%.o: %.c %.h
-	$(CC) $(CFLAGS) -c $<
+$(ALL): %.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean target
 clean:
-	rm -f $(EXECUTABLES) *.o
+	rm -f lists/*.o maps/*.o trees/*.o

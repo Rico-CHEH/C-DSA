@@ -1,4 +1,2 @@
 *.o
-tests.exe
-.idea
-tests*
+*\.exe
