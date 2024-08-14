@@ -51,8 +51,9 @@ void add(unionfind* set, int new_item, int parent) {
 
     if (parent == new_item) {
         set->array[new_item] = (node) {.parent = parent, .state = OCCUPIED};
-        set->num_items++;
         set->num_disjoint_trees++;
+        set->num_items++;
+        return;
     }
 
     assert(set->array[parent].state == OCCUPIED);
