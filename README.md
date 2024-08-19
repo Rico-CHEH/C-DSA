@@ -31,12 +31,13 @@ push(&l, &my_data);
 ```
 Note:
 - It is a little unpractical for now, and it is subject to change since I plan on exploring other ways of implementing generics.
-- If you do think something could be improved, do let me know, I truly want to become better at writing C.
+- If you do think something could be improved, do let me know.
 
 Implemented Data Structures:
 - [x] Arraylist
 - [x] Singly Linkedlist
 - [x] HashMap (Only Open Adressing, Without generics)
 - [x] Doubly Linkedlist
-- [x] Binary Search Trees
+- [x] Binary Search Trees (Without generics)
+- [x] Disjoint Sets (Without generics)
 - [ ] Heaps
