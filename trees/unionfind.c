@@ -38,8 +38,6 @@ void join(unionfind* set, int item1, int item2) {
     }
 }
 
-
-// TODO: Add resize
 void add(unionfind* set, int new_item, int parent) {
     assert(set != NULL);
     assert(new_item >= 0);
